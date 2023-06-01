@@ -3,23 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace wpf_lab2
@@ -33,13 +22,15 @@ namespace wpf_lab2
         private bool mediaPlayerIsPlaying = false;
         private bool userIsDraggingSlider = false;
         private DispatcherTimer timer;
-        public static ObservableCollection<DataItem> rows { get; set; }
+        public static ObservableCollection<DataItem> data { get; set; }
         public static DataItem selectedItem { get; set; }
         public MainWindow()
         {
-            rows = new ObservableCollection<DataItem>();
-            this.DataContext = rows;
+            data = new ObservableCollection<DataItem>();
+            this.DataContext = data;
             InitializeComponent();
+            grid.Items.SortDescriptions.Add(new SortDescription(grid.Columns[0].SortMemberPath, ListSortDirection.Ascending));
+            grid.Columns[0].SortDirection = ListSortDirection.Ascending;
             LoadPlugins();
         }
         private void LoadPlugins()
@@ -150,9 +141,9 @@ namespace wpf_lab2
                 var time = new TimeSpan(0, 0, 0, 0, (int)mediaPlayer.Position.TotalMilliseconds);
                 List<string> subtitles;
                 if(check.IsChecked == true)
-                    subtitles = rows.Where(ob => ob.sTime <= time && ob.hTime >= time).Select(ob => ob.translation).ToList();
+                    subtitles = data.Where(ob => ob.sTime <= time && ob.hTime >= time).Select(ob => ob.translation).ToList();
                 else
-                    subtitles = rows.Where(ob=>ob.sTime <= time && ob.hTime >= time).Select(ob=>ob.text).ToList();
+                    subtitles = data.Where(ob=>ob.sTime <= time && ob.hTime >= time).Select(ob=>ob.text).ToList();
                 if (subtitles.Count == 0)
                     subtitlesTextBlock.Visibility = Visibility.Collapsed;
                 else
@@ -163,10 +154,10 @@ namespace wpf_lab2
         }
         private void addClick(object sender, RoutedEventArgs e)
         {
-            var time = rows.Max(ob => ob.hTime);
+            var time = data.Max(ob => ob.hTime);
             var item = new DataItem();
             item.hTime = item.sTime = time;
-            rows.Add(item);
+            data.Add(item);
         }
         private void addAfterClick(object sender, RoutedEventArgs e)
         {
@@ -177,7 +168,7 @@ namespace wpf_lab2
             var time = items.Max(ob => ((DataItem)ob).hTime);
             var item = new DataItem();
             item.hTime=item.sTime=time;
-            rows.Add(item);
+            data.Add(item);
         }
         private void deleteClick(object sender, RoutedEventArgs e)
         {
@@ -187,7 +178,7 @@ namespace wpf_lab2
                 var it = items[i] as DataItem;
                 if (it == null) 
                     continue;
-                rows.Remove((DataItem)items[i]);
+                data.Remove((DataItem)items[i]);
             }
         }
         private void lbDown(object sender, MouseButtonEventArgs e)
@@ -219,10 +210,10 @@ namespace wpf_lab2
         public string? translation { get; set; }
         public DataItem()
         {
-          if(MainWindow.rows.Count > 0)
+          if(MainWindow.data.Count > 0)
           {
-              this.sTime = MainWindow.rows.Max(x => x.hTime);
-              this.hTime = MainWindow.rows.Max(x => x.hTime);
+              this.sTime = MainWindow.data.Max(x => x.hTime);
+              this.hTime = MainWindow.data.Max(x => x.hTime);
           }
           else
           {

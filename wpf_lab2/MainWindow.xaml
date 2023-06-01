@@ -102,12 +102,13 @@
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Show time" Width="auto" Binding="{Binding sTime,UpdateSourceTrigger=PropertyChanged,
-                        Converter={StaticResource TimeSpanConverter}}" SortMemberPath="sTime"/>
+                        Converter={StaticResource TimeSpanConverter}}" CanUserSort="False"/>
                     <DataGridTextColumn Header="Hide time"  Width="auto" Binding="{Binding hTime, UpdateSourceTrigger=PropertyChanged,
-                        Converter={StaticResource TimeSpanConverter}}"/>
-                    <DataGridTextColumn Header="Text" Width="50*" Binding="{Binding text, UpdateSourceTrigger=PropertyChanged}"/>
+                        Converter={StaticResource TimeSpanConverter}}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Text" Width="50*" Binding="{Binding text, UpdateSourceTrigger=PropertyChanged}"
+                                        CanUserSort="False"/>
                     <DataGridTextColumn Header="Translation" Width="50*" Visibility="Collapsed" Binding="{Binding translation, 
-                        UpdateSourceTrigger=PropertyChanged}"/>
+                        UpdateSourceTrigger=PropertyChanged}" CanUserSort="False"/>
                 </DataGrid.Columns>
             </DataGrid>
             <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" />
