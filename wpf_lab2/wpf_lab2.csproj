@@ -23,4 +23,8 @@
     <Folder Include="plugins\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SubtitlePlugins\SubtitlePlugins.csproj" />
+  </ItemGroup>
+
 </Project>

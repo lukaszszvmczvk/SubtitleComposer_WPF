@@ -5,6 +5,10 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wpf_lab2", "wpf_lab2\wpf_lab2.csproj", "{DB6C86B0-BE80-4DBF-AE9C-7D15029F055C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtitlePlugins", "SubtitlePlugins\SubtitlePlugins.csproj", "{0D147124-B067-41A2-A446-7425554354BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubRip", "SubRip\SubRip.csproj", "{3F679278-8F38-4ADC-B411-D5F73BC81F98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{DB6C86B0-BE80-4DBF-AE9C-7D15029F055C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB6C86B0-BE80-4DBF-AE9C-7D15029F055C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB6C86B0-BE80-4DBF-AE9C-7D15029F055C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D147124-B067-41A2-A446-7425554354BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D147124-B067-41A2-A446-7425554354BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D147124-B067-41A2-A446-7425554354BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D147124-B067-41A2-A446-7425554354BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F679278-8F38-4ADC-B411-D5F73BC81F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F679278-8F38-4ADC-B411-D5F73BC81F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F679278-8F38-4ADC-B411-D5F73BC81F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F679278-8F38-4ADC-B411-D5F73BC81F98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

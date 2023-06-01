@@ -29,9 +29,9 @@
                 <MenuItem Header="Exit" Click="MenuItem_Click_1"/>
             </MenuItem>
             <MenuItem Header="_Subtitles">
-                <MenuItem Header="Open" IsEnabled="True"/>
-                <MenuItem Header="Save" IsEnabled="True"/>
-                <MenuItem Header="Save Translation" IsEnabled="{Binding ElementName=check, Path=IsChecked}"/>
+                <MenuItem Header="Open" IsEnabled="True" Name="openMenuItem"/>
+                <MenuItem Header="Save" IsEnabled="True" Name="saveMenuItem"/>
+                <MenuItem Header="Save Translation" IsEnabled="{Binding ElementName=check, Path=IsChecked}" Name="saveTranslationMenuItem"/>
                 <Separator />
                 <MenuItem Header="Translation" IsEnabled="True" IsChecked="False" IsCheckable="True" Name="check"
                           Checked="TranslationChecked" Unchecked="TranslationUnchecked"/>
@@ -92,7 +92,8 @@
                 </Grid>
             </Grid>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
-            <DataGrid Name="grid" Grid.Row="2"  CanUserAddRows="True" ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
+            <DataGrid Name="grid" Grid.Row="2"  CanUserAddRows="True" ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}" 
+                      AutoGenerateColumns="False" InitializingNewItem="initializeNewItem">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add" Click="addClick"/>

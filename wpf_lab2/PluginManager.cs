@@ -5,25 +5,18 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using SubtitlePlugins;
 namespace wpf_lab2
 {
-    public interface ISubtitlesPlugin
-    {
-        string Name { get; }
-        string Extension { get; }
-        ICollection<DataItem> Load(string path);
-        void Save(string path, ICollection<DataItem> subtitles);
-    }
     public class PluginManager
     {
-        private List<ISubtitlesPlugin> _plugins;
+        public List<ISubtitlesPlugin> _plugins;
         public PluginManager()
         {
             _plugins = new List<ISubtitlesPlugin>();
         }
 
-        public void LoadPlugins(string pluginsDirectory)
+        public void LoadPlugins(string pluginsDirectory= @"C:\Users\A1\Desktop\semestr4\srodowisko_graficzne\WPF\wpf_lab2\wpf_lab2\plugins")
         {
             if (!Directory.Exists(pluginsDirectory))
                 return;

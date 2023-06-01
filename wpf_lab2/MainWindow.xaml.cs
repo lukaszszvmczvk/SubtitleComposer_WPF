@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -10,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-
+using SubtitlePlugins;
 namespace wpf_lab2
 {
     /// <summary>
@@ -36,7 +37,95 @@ namespace wpf_lab2
         private void LoadPlugins()
         {
             pluginManager = new PluginManager();
-            //pluginManager.LoadPlugins();
+            pluginManager.LoadPlugins();
+            var save = this.saveMenuItem;
+            var open = this.openMenuItem;
+            var saveTranslation = this.saveTranslationMenuItem;
+            foreach(var plugin in pluginManager._plugins)
+            {
+                MenuItem newSaveItem = new MenuItem()
+                {
+                    Header = plugin.Name,
+                };
+                newSaveItem.Click += pluginSaveText;
+                MenuItem newOpenItem = new MenuItem()
+                {
+                    Header = plugin.Name,
+                };
+                newOpenItem.Click += pluginOpen;
+                MenuItem newSaveTranslationItem = new MenuItem()
+                {
+                    Header = plugin.Name,
+                };
+                newSaveTranslationItem.Click += pluginSaveTranslation;
+                saveTranslation.Items.Add(newSaveTranslationItem);
+                save.Items.Add(newSaveItem);
+                open.Items.Add(newOpenItem);
+            }
+        }
+        private void pluginSaveText(object sender, RoutedEventArgs e)
+        {
+            var menuitem = sender as MenuItem;
+            if(menuitem != null)
+            {
+                var name = menuitem.Header;
+                var plugin = pluginManager._plugins.Find(x => x.Name == name);
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = $"Pliki (*{plugin.Extension})|*{plugin.Extension}";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.FileName = "NowyPlik" + plugin.Extension;
+                saveFileDialog.DefaultExt = plugin.Extension;
+                bool? result = saveFileDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    plugin.Save(filePath, data);
+                }
+            }
+        }
+        private void pluginSaveTranslation(object sender, RoutedEventArgs e)
+        {
+            var menuitem = sender as MenuItem;
+            if (menuitem != null)
+            {
+                var name = menuitem.Header;
+                var plugin = pluginManager._plugins.Find(x => x.Name == name);
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = $"Pliki (*{plugin.Extension})|*{plugin.Extension}";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.FileName = "NowyPlik" + plugin.Extension;
+                saveFileDialog.DefaultExt = plugin.Extension;
+                bool? result = saveFileDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    plugin.Save(filePath, data, true);
+                }
+            }
+        }
+        private void pluginOpen(object sender, RoutedEventArgs e)
+        {
+            var menuitem = sender as MenuItem;
+            if (menuitem != null)
+            {
+                var name = menuitem.Header;
+                var plugin = pluginManager._plugins.Find(x => x.Name == name);
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+
+                openFileDialog.Filter = $"Pliki (*{plugin.Extension})|*{plugin.Extension}";
+                openFileDialog.FilterIndex = 1;
+
+                bool? result = openFileDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    string filePath = openFileDialog.FileName;
+                    data = plugin.Load(filePath);
+                    grid.ItemsSource = data;
+                }
+            }
         }
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
@@ -154,21 +243,29 @@ namespace wpf_lab2
         }
         private void addClick(object sender, RoutedEventArgs e)
         {
-            var time = data.Max(ob => ob.hTime);
-            var item = new DataItem();
-            item.hTime = item.sTime = time;
-            data.Add(item);
+            try
+            {
+                var time = data.Max(ob => ob.hTime);
+                var item = new DataItem();
+                item.hTime = item.sTime = time;
+                data.Add(item);
+            }
+            catch { }
         }
         private void addAfterClick(object sender, RoutedEventArgs e)
         {
-            var items = grid.SelectedItems.Cast<object>().ToList();
-            var it = items[items.Count-1] as DataItem;
-            if (it == null)
-                items.RemoveAt(items.Count-1);
-            var time = items.Max(ob => ((DataItem)ob).hTime);
-            var item = new DataItem();
-            item.hTime=item.sTime=time;
-            data.Add(item);
+            try
+            {
+                var items = grid.SelectedItems.Cast<object>().ToList();
+                var it = items[items.Count-1] as DataItem;
+                if (it == null)
+                    items.RemoveAt(items.Count-1);
+                var time = items.Max(ob => ((DataItem)ob).hTime);
+                var item = new DataItem();
+                item.hTime=item.sTime=time;
+                data.Add(item);
+            }
+            catch { }
         }
         private void deleteClick(object sender, RoutedEventArgs e)
         {
@@ -201,129 +298,19 @@ namespace wpf_lab2
                 mediaPlayerIsPlaying = true;
             }
         }
-    }
-    public class DataItem
-    {
-        public TimeSpan sTime { get; set; }
-        public TimeSpan hTime { get; set; }
-        public string? text { get; set; }
-        public string? translation { get; set; }
-        public DataItem()
+        private void initializeNewItem(object sender, InitializingNewItemEventArgs e)
         {
-          if(MainWindow.data.Count > 0)
-          {
-              this.sTime = MainWindow.data.Max(x => x.hTime);
-              this.hTime = MainWindow.data.Max(x => x.hTime);
-          }
-          else
-          {
-              this.sTime = TimeSpan.Zero;
-              this.hTime= TimeSpan.Zero;
-          }
-        }
-    }
-    public class DurationConverter : IMultiValueConverter
-    {
-        TimeSpan showTime;
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
-                return "";
-            TimeSpan start = (TimeSpan)values[0];
-            this.showTime = start;
-            TimeSpan end = (TimeSpan)values[1];
-            TimeSpan duration = end - start;
-            var converter = new TimeSpanConverter();
-            string s = "";
-            if (duration.CompareTo(TimeSpan.Zero) < 0)
-                s = "-";
-            return s+converter.Convert(duration, null, null, culture);
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            TimeSpan[] times = new TimeSpan[2];
-            if(value is string str)
+            DataItem newItem = e.NewItem as DataItem;
+            if (MainWindow.data.Count > 0)
             {
-                TimeSpan interval;
-                string[] parsePatterns = new string[] { "%s", "%s\\.fff", "%s\\.ff", "%s\\.f", "%m\\:%s", "%m\\:%s\\.f",
-                    "%m\\:%s\\.ff", "%m\\:%s\\.fff", "h\\:%m\\:%s\\.fff","h\\:%m\\:%s\\.f", "h\\:%m\\:%s\\.ff","h\\:%m\\:%s"};
-                if (TimeSpan.TryParseExact(str, parsePatterns, culture, TimeSpanStyles.None, out interval) == false)
-                    return new[] { Binding.DoNothing, Binding.DoNothing };
-                
-                TimeSpan hide = showTime + interval;
-                return new[] { (object)showTime, (object)hide };
-
+                newItem.sTime = MainWindow.data.Max(x => x.hTime);
+                newItem.hTime = MainWindow.data.Max(x => x.hTime);
             }
-            throw new NotImplementedException();
-        }
-    }
-    public class TextConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            string text = (string)value;
-            return $"Text: {text.Length} characters";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class TranslationConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            string text = (string)value;
-            return $"Translation: {text.Length} characters";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class TimeSpanConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is TimeSpan timeSpan)
+            else
             {
-                if (timeSpan.Milliseconds == 0)
-                {
-                    if(timeSpan.Hours!=0)
-                        return timeSpan.ToString(@"h\:%m\:%s");
-                    if(timeSpan.Minutes!=0)
-                        return timeSpan.ToString(@"%m\:%s");
-                    if (timeSpan.Seconds != 0)
-                        return timeSpan.ToString(@"%s");
-                    return "0";
-                }
-                else
-                {
-                    if (timeSpan.Hours != 0)
-                        return timeSpan.ToString(@"h\:%m\:%s\.fff").TrimEnd('0');
-                    if (timeSpan.Minutes != 0)
-                        return timeSpan.ToString(@"%m\:%s\.fff").TrimEnd('0');
-                    return timeSpan.ToString(@"%s\.FFF");
-                }
+                newItem.sTime = TimeSpan.Zero;
+                newItem.hTime= TimeSpan.Zero;
             }
-
-            return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is string str)
-            {
-                TimeSpan interval;
-                string[] parsePatterns = new string[] { "%s", "%s\\.fff", "%s\\.ff", "%s\\.f", "%m\\:%s", "%m\\:%s\\.f",
-                    "%m\\:%s\\.ff", "%m\\:%s\\.fff", "h\\:%m\\:%s\\.fff","h\\:%m\\:%s\\.f", "h\\:%m\\:%s\\.ff","h\\:%m\\:%s"};
-                if (TimeSpan.TryParseExact(str, parsePatterns, culture, TimeSpanStyles.None,out interval))
-                    return interval;
-            }
-            return DependencyProperty.UnsetValue;
         }
     }
 }
