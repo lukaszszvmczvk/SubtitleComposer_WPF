@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <BaseOutputPath>C:\Users\A1\Desktop\semestr4\srodowisko_graficzne\WPF\wpf_lab2\wpf_lab2\plugins</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\wpf_lab2\wpf_lab2.csproj" />
+  </ItemGroup>
+
+</Project>
