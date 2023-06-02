@@ -93,7 +93,7 @@
             </Grid>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
             <DataGrid Name="grid" Grid.Row="2"  CanUserAddRows="True" ItemsSource="{Binding UpdateSourceTrigger=PropertyChanged}" 
-                      AutoGenerateColumns="False" InitializingNewItem="initializeNewItem">
+                      AutoGenerateColumns="False" InitializingNewItem="initializeNewItem" SelectedCellsChanged="selectedChanged">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add" Click="addClick"/>

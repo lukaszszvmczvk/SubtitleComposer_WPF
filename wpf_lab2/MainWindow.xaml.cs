@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using SubtitlePlugins;
+using System.IO;
 namespace wpf_lab2
 {
     /// <summary>
@@ -19,6 +20,7 @@ namespace wpf_lab2
     /// </summary>
     public partial class MainWindow : Window
     {
+        string directoryPath;
         private PluginManager pluginManager;
         private bool mediaPlayerIsPlaying = false;
         private bool userIsDraggingSlider = false;
@@ -30,6 +32,8 @@ namespace wpf_lab2
             data = new ObservableCollection<DataItem>();
             this.DataContext = data;
             InitializeComponent();
+            directoryPath = @".\plugins";
+            Directory.CreateDirectory(directoryPath);
             grid.Items.SortDescriptions.Add(new SortDescription(grid.Columns[0].SortMemberPath, ListSortDirection.Ascending));
             grid.Columns[0].SortDirection = ListSortDirection.Ascending;
             LoadPlugins();
@@ -37,7 +41,7 @@ namespace wpf_lab2
         private void LoadPlugins()
         {
             pluginManager = new PluginManager();
-            pluginManager.LoadPlugins();
+            pluginManager.LoadPlugins(directoryPath);
             var save = this.saveMenuItem;
             var open = this.openMenuItem;
             var saveTranslation = this.saveTranslationMenuItem;
@@ -122,7 +126,7 @@ namespace wpf_lab2
                 if (result == true)
                 {
                     string filePath = openFileDialog.FileName;
-                    data = plugin.Load(filePath);
+                    data = plugin.Load(filePath,this.check.IsChecked);
                     grid.ItemsSource = data;
                 }
             }
@@ -310,6 +314,15 @@ namespace wpf_lab2
             {
                 newItem.sTime = TimeSpan.Zero;
                 newItem.hTime= TimeSpan.Zero;
+            }
+        }
+        private void selectedChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            DataItem item = grid.SelectedItem as DataItem;
+            if (item != null)
+            {
+                timelineSlider.Value = item.sTime.TotalMilliseconds;
+                mediaPlayer.Position = TimeSpan.FromMilliseconds(timelineSlider.Value);
             }
         }
     }

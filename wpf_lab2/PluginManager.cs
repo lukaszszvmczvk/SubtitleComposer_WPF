@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using SubtitlePlugins;
 namespace wpf_lab2
 {
@@ -16,7 +14,7 @@ namespace wpf_lab2
             _plugins = new List<ISubtitlesPlugin>();
         }
 
-        public void LoadPlugins(string pluginsDirectory= @"C:\Users\A1\Desktop\semestr4\srodowisko_graficzne\WPF\wpf_lab2\wpf_lab2\plugins")
+        public void LoadPlugins(string pluginsDirectory)
         {
             if (!Directory.Exists(pluginsDirectory))
                 return;
@@ -38,8 +36,6 @@ namespace wpf_lab2
                 }
                 catch (Exception ex)
                 {
-                    // Obsługa błędów ładowania pluginu
-                    //Console.WriteLine($"Błąd ładowania pluginu: {ex.Message}");
                 }
             }
         }

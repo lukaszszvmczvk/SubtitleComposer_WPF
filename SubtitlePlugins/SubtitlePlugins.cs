@@ -16,7 +16,7 @@ namespace SubtitlePlugins
     {
         string Name { get; }
         string Extension { get; }
-        ObservableCollection<DataItem> Load(string path);
+        ObservableCollection<DataItem> Load(string path, bool isTranslation = false);
         void Save(string path, ObservableCollection<DataItem> subtitles,bool saveTranslation=false);
     }
 }
