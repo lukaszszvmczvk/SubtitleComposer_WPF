@@ -51,9 +51,8 @@ namespace SubRip
                     }
                 }
             }
-            catch (Exception ex)
-            {
-            }
+            catch ()
+            { }
 
             return dataItems;
         }
